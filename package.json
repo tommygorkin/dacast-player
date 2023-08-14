@@ -1,9 +1,10 @@
 {
   "name": "dacast-player",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Unofficial dacast player based on video.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "repository": "https://github.com/tommygorkin/dacast-player.git",
   "author": "Tomas Gorkin <toamsgorkin@gmail.com>",
   "license": "MIT",
