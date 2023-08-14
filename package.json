@@ -1,6 +1,6 @@
 {
   "name": "dacast-player",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Unofficial dacast player based on video.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,8 @@
     "registry": "http://localhost:4873/"
   },
   "dependencies": {
-    "video.js": "^8.3.0"
+    "video.js": "^8.3.0",
+    "videojs-contrib-hls": "^5.15.0"
   },
   "devDependencies": {
     "tsc": "^2.0.4",
