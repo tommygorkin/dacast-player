@@ -1,6 +1,6 @@
 {
   "name": "dacast-player",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Unofficial dacast player based on video.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
