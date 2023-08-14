@@ -1,0 +1,24 @@
+{
+  "name": "dacast-player",
+  "version": "1.0.1",
+  "description": "Unofficial dacast player based on video.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/tommygorkin/dacast-player.git",
+  "author": "Tomas Gorkin <toamsgorkin@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "registry": "http://localhost:4873/"
+  },
+  "dependencies": {
+    "video.js": "^8.3.0"
+  },
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "prepublish": "tsc"
+  }
+}
