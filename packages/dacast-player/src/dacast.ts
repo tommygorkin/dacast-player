@@ -29,6 +29,10 @@ export interface ContentInfo {
   }
 }
 
+export interface ContentInfoResponse {
+  contentInfo: ContentInfo
+}
+
 export interface AccessResponse {
   hls: string
 }
@@ -46,7 +50,7 @@ export const getMetadata = async (contentId: string) => {
     },
     method: 'GET',
   })
-  return response.json() as Promise<ContentInfo>
+  return response.json() as Promise<ContentInfoResponse>
 }
 
 export const getStream = async (contentId: string) => {

@@ -12,6 +12,9 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "baseUrl": ".",
+    "paths": {
+      "*": ["src/*"]
+    },
     "declaration": true,
     "outDir": "dist"
   }

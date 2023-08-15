@@ -1,32 +1,12 @@
 {
-  "name": "dacast-player",
-  "version": "1.0.14",
-  "description": "Unofficial dacast player based on video.js",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "repository": "https://github.com/tommygorkin/dacast-player.git",
-  "author": "Tomas Gorkin <toamsgorkin@gmail.com>",
-  "license": "MIT",
-  "private": false,
-  "publishConfig": {
-    "registry": "http://localhost:4873/"
-  },
-  "dependencies": {
-    "video.js": "^8.3.0",
-    "videojs-contrib-hls": "^5.15.0"
-  },
-  "devDependencies": {
-    "@parcel/transformer-vue": "2.9.3",
-    "parcel": "^2.9.3",
-    "tsc": "^2.0.4",
-    "typescript": "^5.1.6",
-    "vue": "^3.3.4"
-  },
+  "name": "dacast-player-root",
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ],
   "scripts": {
-    "prepublish": "tsc"
+    "demo": "npx parcel packages/demo/index.html"
   },
-  "files": [
-    "dist"
-  ]
+  "dependencies": {},
+  "devDependencies": {}
 }
