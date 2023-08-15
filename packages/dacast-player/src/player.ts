@@ -2,7 +2,7 @@ import videojs from 'video.js'
 //tslint-ignore
 import 'videojs-contrib-quality-levels'
 // https://github.com/chrisboustead/videojs-hls-quality-selector/issues/107
-import hlsQualitySelector from '@mycujoo/videojs-hls-quality-selector'
+import hlsQualitySelector from 'videojs-hls-quality-selector'
 import * as DacastApi from './dacast'
 import { logger } from './logger'
 
