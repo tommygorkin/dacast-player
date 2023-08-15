@@ -1,0 +1,12 @@
+{
+  "name": "dacast-player-root",
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ],
+  "scripts": {
+    "demo": "npx parcel packages/demo/index.html"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
