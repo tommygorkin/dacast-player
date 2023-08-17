@@ -50,6 +50,9 @@ export const getMetadata = async (contentId: string) => {
     },
     method: 'GET',
   })
+  if (response.status !== 200) {
+    throw new Error('API response status error')
+  }
   return response.json() as Promise<ContentInfoResponse>
 }
 
@@ -63,5 +66,8 @@ export const getStream = async (contentId: string) => {
     },
     method: 'GET',
   })
+  if (response.status !== 200) {
+    throw new Error('API response status error')
+  }
   return response.json() as Promise<AccessResponse>
 }

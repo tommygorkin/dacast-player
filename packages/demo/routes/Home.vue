@@ -7,22 +7,41 @@ const currentTime = ref(0)
 
 let player: DacastPlayer
 
+const handlePlayerError = (err: MediaError) => {
+  console.log('handling: ', err)
+}
+
 onMounted(async () => {
   player = new DacastPlayer({
     id: 'playa',
-    verbose: true,
+    dacastOptions: {
+      contentId: process.env.DACAST_CONTENT_ID,
+    },
+    verbose: false,
+    on: {
+      error: handlePlayerError,
+      play: () => {
+        console.log('playing')
+      },
+      pause: () => {
+        console.log('paused')
+      },
+      ended: () => {
+        console.log('ended')
+      },
+    },
   })
-  player.init(process.env.DACAST_CONTENT_ID)
+  player.mount()
 })
 
 const play = () => {
-  player.videojs.play()
+  player.player?.play()
 }
 const pause = () => {
-  player.videojs.pause()
+  player.player?.pause()
 }
 const applyCurrentTime = () => {
-  player.videojs.currentTime(currentTime.value)
+  player.player?.currentTime(currentTime.value)
 }
 </script>
 
