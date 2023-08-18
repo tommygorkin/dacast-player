@@ -1,5 +1,4 @@
 import videojs from 'video.js'
-import { version as VERSION } from '../package.json'
 
 import SourceMenuButton from './components/SourceMenuButton'
 import SourceMenuItem from './components/SourceMenuItem'
