@@ -1,97 +1,188 @@
 import videojs from 'video.js'
-//tslint-ignore
-import 'videojs-contrib-quality-levels'
-// https://github.com/chrisboustead/videojs-hls-quality-selector/issues/107
-import hlsQualitySelector from 'videojs-hls-quality-selector'
+import 'videojs-http-source-selector'
+
 import * as DacastApi from './dacast'
 import { logger } from './logger'
+import Player from 'video.js/dist/types/player'
 
-// videojs.registerPlugin('hlsQualitySelector', hlsQualitySelector)
+interface PlayerEvents {
+  canplay?: () => unknown
+  play?: () => unknown
+  pause?: () => unknown
+  ended?: () => unknown
+}
+
+interface DacastPlayerEvents extends PlayerEvents {
+  error?: (err: MediaError) => unknown
+}
 
 export interface DacastPlayerOptions {
   id: string | Element
   videoJsOptions?: any
-  verbose: boolean
+  dacastOptions?: {
+    contentId?: string
+    live?: boolean
+  }
+  verbose?: boolean
+  on?: DacastPlayerEvents
 }
 
-// videojs.registerPlugin('qualityLevels', qualityLevels)
+const defaultOptions: Partial<DacastPlayerOptions> = {
+  videoJsOptions: {},
+  dacastOptions: {},
+  verbose: false,
+  on: {},
+}
 
 export class DacastPlayer {
-  videojs: videojs.Player
-  _contentId?: string
+  player?: Player
+  _options: Required<DacastPlayerOptions>
+  _metadata?: DacastApi.ContentInfo
+  _src?: string
   constructor(options: DacastPlayerOptions) {
-    let element: Element
-    if (typeof options.id === 'string') {
-      const retrieved = document.getElementById(options.id)
-      if (!retrieved) {
-        throw new Error('Element not found')
-      }
-      element = retrieved
-    } else {
-      element = options.id
+    this._options = {
+      ...defaultOptions,
+      videoJsOptions: {
+        ...defaultOptions.videoJsOptions,
+        ...(options.videoJsOptions || {}),
+      },
+      dacastOptions: {
+        ...defaultOptions.dacastOptions,
+        ...(options.dacastOptions || {}),
+      },
+      on: {
+        ...(options.on || {}),
+      },
+      id: options.id,
+      verbose: options.verbose || false,
     }
-    element.classList.add('video-js', 'vjs-big-play-centered')
-    this.videojs = videojs(element)
-    // https://github.com/chrisboustead/videojs-hls-quality-selector/issues/10
-    this.videojs.hlsQualitySelector = hlsQualitySelector
     if (options.verbose) {
       logger.verbose(options.verbose)
     } else {
       // https://github.com/videojs/video.js/issues/3803
       videojs.log.level('off')
     }
+    videojs.hook('error', (player: Player, err: MediaError) =>
+      this._handleError(player, err)
+    )
   }
 
-  src(contentId: string) {
-    this._contentId = contentId
+  _handleError(player: Player, err: MediaError) {
+    if (this._options.on.error) {
+      this._options.on.error(err)
+    }
+  }
+
+  _handlePlayerEvent(event: keyof PlayerEvents) {
+    if (this._options.on && this._options.on[event]) {
+      ;(this._options.on[event] as () => unknown)()
+    }
+  }
+
+  _mountElement(id: string | Element) {
+    let element: Element
+    if (typeof id === 'string') {
+      const retrieved = document.getElementById(id)
+      if (!retrieved) {
+        throw new Error('Element not found')
+      }
+      element = retrieved
+    } else {
+      element = id
+    }
+    element.classList.add('video-js', 'vjs-big-play-centered')
+    const liveContentId =
+      this._options.dacastOptions.contentId &&
+      this._options.dacastOptions.contentId.indexOf('live') !== -1
+    logger.log(`Content id is${liveContentId ? '' : ' not'} a livestream`)
+    const options = {
+      ...this._options.videoJsOptions,
+      liveui:
+        this._options.dacastOptions?.live !== undefined
+          ? this._options.dacastOptions?.live
+          : liveContentId,
+      plugins: {
+        httpSourceSelector: {},
+      },
+    }
+    logger.log('Mounting with options: ', options)
+    const instance = videojs(element, options)
+    const events: Array<keyof PlayerEvents> = [
+      'canplay',
+      'play',
+      'pause',
+      'ended',
+    ]
+    events.forEach((ev) => instance.on(ev, () => this._handlePlayerEvent(ev)))
+    return instance
+  }
+
+  contentId(contentId: string) {
+    this._options.dacastOptions.contentId = contentId
   }
 
   async getMetadata() {
-    if (!this._contentId) {
+    if (!this._options.dacastOptions.contentId) {
       return
     }
+    this._metadata = undefined
     logger.log('Requesting metadata')
-    const metadata = await DacastApi.getMetadata(this._contentId)
-    logger.log('Received metadata', metadata)
-    this.videojs.poster(metadata.contentInfo.thumbnailUrl)
-    return metadata
+    try {
+      const metadata = await DacastApi.getMetadata(
+        this._options.dacastOptions.contentId
+      )
+      logger.log('Received metadata', metadata)
+      this._metadata = metadata.contentInfo
+      if (!this._options.videoJsOptions.poster) {
+        this._options.videoJsOptions.poster = this._metadata.thumbnailUrl
+      }
+      return metadata
+    } catch (err) {
+      logger.error('Failed to fetch metadata from Dacast API', err)
+    }
   }
 
   async getStream() {
-    if (!this._contentId) {
+    if (!this._options.dacastOptions.contentId) {
       return
     }
+    this._src = undefined
     logger.log('Requesting stream')
-    const response = await DacastApi.getStream(this._contentId)
-    logger.log('Received stream', response)
-    this.videojs.src({
-      src: response.hls,
+    try {
+      const response = await DacastApi.getStream(
+        this._options.dacastOptions.contentId
+      )
+      logger.log('Received stream', response)
+      this._src = response.hls
+    } catch (err) {
+      logger.error('Failed to fetch stream from Dacast API', err)
+    }
+  }
+
+  async mount() {
+    if (this.player) {
+      logger.warn('Already mounted, disposing previous player')
+      this.player.dispose()
+    }
+    this.player = this._mountElement(this._options.id)
+    await this.getMetadata()
+    if (!this._metadata) {
+      return
+    }
+    await this.getStream()
+    if (!this._src) {
+      return
+    }
+    logger.log('Setting source: ', this._src)
+    this.player.src({
+      src: this._src,
       type: 'application/x-mpegURL',
     })
   }
 
-  async init(contentId: string) {
-    this.src(contentId)
-    await this.getMetadata()
-    await this.getStream()
-    // https://github.com/chrisboustead/videojs-hls-quality-selector/issues/78
-    this.videojs.hlsQualitySelector()
-    // https://github.com/chrisboustead/videojs-hls-quality-selector/issues/8
-    const qualityLevels = this.videojs.qualityLevels()
-    qualityLevels.on('addqualitylevel', function (event) {
-      let qualityLevel = event.qualityLevel
-      if (qualityLevel.height) {
-        qualityLevel.enabled = true
-      } else {
-        logger.warn('Found a quality level without height', qualityLevel)
-        qualityLevels.removeQualityLevel(qualityLevel)
-        qualityLevel.enabled = false
-      }
-    })
-    // videojs.log.level('warn')
-  }
-
   dispose() {
-    this.videojs.dispose()
+    if (this.player) {
+      this.player.dispose()
+    }
   }
 }
