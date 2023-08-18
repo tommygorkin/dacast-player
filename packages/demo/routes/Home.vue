@@ -7,10 +7,6 @@ const currentTime = ref(0)
 
 let player: DacastPlayer
 
-const handlePlayerError = (err: MediaError) => {
-  console.log('handling: ', err)
-}
-
 onMounted(async () => {
   player = new DacastPlayer({
     id: 'playa',
@@ -19,14 +15,19 @@ onMounted(async () => {
     },
     verbose: false,
     on: {
-      error: handlePlayerError,
-      play: () => {
+      error(err) {
+        console.log('handling: ', err)
+      },
+      canplay() {
+        console.log('can play')
+      },
+      play() {
         console.log('playing')
       },
-      pause: () => {
+      pause() {
         console.log('paused')
       },
-      ended: () => {
+      ended() {
         console.log('ended')
       },
     },

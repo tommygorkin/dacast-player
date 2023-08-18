@@ -6,6 +6,17 @@ import { logger } from './logger'
 import Player from 'video.js/dist/types/player'
 import { Event } from 'video.js/dist/types/event-target'
 
+interface PlayerEvents {
+  canplay?: () => unknown
+  play?: () => unknown
+  pause?: () => unknown
+  ended?: () => unknown
+}
+
+interface DacastPlayerEvents extends PlayerEvents {
+  error?: (err: MediaError) => unknown
+}
+
 export interface DacastPlayerOptions {
   id: string | Element
   videoJsOptions?: any
@@ -14,12 +25,7 @@ export interface DacastPlayerOptions {
     live?: boolean
   }
   verbose?: boolean
-  on?: {
-    error?: (err: MediaError) => unknown
-    play?: () => unknown
-    pause?: () => unknown
-    ended?: () => unknown
-  }
+  on?: DacastPlayerEvents
 }
 
 const defaultOptions: Partial<DacastPlayerOptions> = {
@@ -68,21 +74,9 @@ export class DacastPlayer {
     }
   }
 
-  _handlePlay() {
-    if (this._options.on.play) {
-      this._options.on.play()
-    }
-  }
-
-  _handlePause() {
-    if (this._options.on.pause) {
-      this._options.on.pause()
-    }
-  }
-
-  _handleEnded() {
-    if (this._options.on.ended) {
-      this._options.on.ended()
+  _handlePlayerEvent(event: keyof PlayerEvents) {
+    if (this._options.on && this._options.on[event]) {
+      ;(this._options.on[event] as () => unknown)()
     }
   }
 
@@ -114,9 +108,13 @@ export class DacastPlayer {
     }
     logger.log('Mounting with options: ', options)
     const instance = videojs(element, options)
-    instance.on('play', () => this._handlePlay())
-    instance.on('pause', () => this._handlePause())
-    instance.on('ended', () => this._handleEnded())
+    const events: Array<keyof PlayerEvents> = [
+      'canplay',
+      'play',
+      'pause',
+      'ended',
+    ]
+    events.forEach((ev) => instance.on(ev, () => this._handlePlayerEvent(ev)))
     return instance
   }
 
