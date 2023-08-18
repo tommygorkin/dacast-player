@@ -10,19 +10,19 @@ class Logger {
 
   log(...args: unknown[]) {
     if (this._verbose) {
-      console.log(...args)
+      console.log('DACAST-PLAYER: ', ...args)
     }
   }
 
   warn(...args: unknown[]) {
     if (this._verbose) {
-      console.warn(...args)
+      console.warn('DACAST-PLAYER: ', ...args)
     }
   }
 
   error(...args: unknown[]) {
     if (this._verbose) {
-      console.error(...args)
+      console.error('DACAST-PLAYER: ', ...args)
     }
   }
 }

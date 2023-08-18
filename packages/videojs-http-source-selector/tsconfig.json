@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "allowJs": true,
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
@@ -10,7 +9,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "ES6"],
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
