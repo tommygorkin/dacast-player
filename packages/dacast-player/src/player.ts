@@ -1,5 +1,5 @@
 import videojs from 'video.js'
-import 'videojs-http-source-selector'
+import './videojs-http-source-selector'
 
 import * as DacastApi from './dacast'
 import { logger } from './logger'
