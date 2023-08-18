@@ -1,11 +1,7 @@
 {
   "name": "dacast-player",
   "version": "0.0.2",
-<<<<<<< HEAD
-  "description": "Unofficial dacast player based on video.js@7",
-=======
   "description": "Unofficial dacast player based on video.js@8",
->>>>>>> e73b14a55ae282e4863bf7ea84d6eb179f5d14ea
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
