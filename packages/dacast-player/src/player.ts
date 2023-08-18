@@ -4,7 +4,6 @@ import 'videojs-http-source-selector'
 import * as DacastApi from './dacast'
 import { logger } from './logger'
 import Player from 'video.js/dist/types/player'
-import { Event } from 'video.js/dist/types/event-target'
 
 interface PlayerEvents {
   canplay?: () => unknown
