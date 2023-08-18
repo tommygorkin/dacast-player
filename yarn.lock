@@ -1211,6 +1211,13 @@ csstype@^3.1.1:
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.1.2.tgz"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
 
+"dacast-player@workspace:*":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/dacast-player/-/dacast-player-0.0.5.tgz#38d795dc2db866f6375235e1edc9b78ef0769cf5"
+  integrity sha512-v/hK0S8ErbiYPBIUek8O1ID+QJG+OXwVq8PiXicyZOjeVWvdVzpJfVt+9BPA7fTiLU8AixbM6Umcxqjke48eRQ==
+  dependencies:
+    video.js "^8.3.0"
+
 detect-libc@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/detect-libc/-/detect-libc-1.0.3.tgz"
