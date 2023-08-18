@@ -18,9 +18,10 @@
     "typescript": "^5.1.6"
   },
   "scripts": {
-    "prepublish": "tsc"
+    "prepublish": "cp ../../README.md ./README.md && tsc"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ]
 }
