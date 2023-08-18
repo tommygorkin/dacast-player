@@ -28,6 +28,7 @@ Apart from that, the official sdk is bloated, unzipped (it's +600kB in size), ha
 
 ```typescript
 import { DacastPlayer } from 'dacast-player'
+import 'video.js/dist/video-js.css'
 const player = new DacastPlayer({
   id: 'dacastplayer',
   dacastOptions: {
