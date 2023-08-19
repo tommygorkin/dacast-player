@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DacastPlayer } from 'dacast-player'
+import { DacastPlayer } from '../../dacast-player'
 import { onMounted, ref } from 'vue'
 
 const playerRef = ref(null as unknown as HTMLElement)
@@ -13,10 +13,13 @@ onMounted(async () => {
     dacastOptions: {
       contentId: process.env.DACAST_CONTENT_ID,
     },
-    verbose: false,
+    verbose: true,
     on: {
       error(err) {
         console.log('handling: ', err)
+      },
+      ready() {
+        console.log('ready')
       },
       canplay() {
         console.log('can play')

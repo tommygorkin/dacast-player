@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "dacast-player": "^0.0.2",
+    "dacast-player": "workspace:^",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },
@@ -12,7 +12,11 @@
     "@parcel/transformer-vue": "2.9.3",
     "buffer": "^5.5.0||^6.0.0",
     "parcel": "^2.9.3",
+    "symlink-dir": "^5.1.1",
     "tsc": "^2.0.4",
     "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "dev": "npx parcel index.html"
   }
 }
