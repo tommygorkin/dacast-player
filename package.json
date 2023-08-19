@@ -5,7 +5,7 @@
     "./packages/*"
   ],
   "scripts": {
-    "demo": "npx parcel packages/demo/index.html"
+    "demo": "cd packages/demo && yarn run dev"
   },
   "dependencies": {},
   "devDependencies": {}

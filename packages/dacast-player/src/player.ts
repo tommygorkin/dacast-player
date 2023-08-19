@@ -6,6 +6,7 @@ import { logger } from './logger'
 import Player from 'video.js/dist/types/player'
 
 interface PlayerEvents {
+  ready?: () => unknown
   canplay?: () => unknown
   play?: () => unknown
   pause?: () => unknown
@@ -108,6 +109,7 @@ export class DacastPlayer {
     logger.log('Mounting with options: ', options)
     const instance = videojs(element, options)
     const events: Array<keyof PlayerEvents> = [
+      'ready',
       'canplay',
       'play',
       'pause',
