@@ -89,10 +89,11 @@ interface DacastPlayerOptions {
 
 ## Methods
 
-| Method                   | Description         |
-| ------------------------ | ------------------- |
-| `mount(): Promise<void>` | Mounts the player   |
-| `dispose(): void`        | Disposes the player |
+| Method                     | Description                                        |
+| -------------------------- | -------------------------------------------------- |
+| `mount(): Promise<void>`   | Mounts the player                                  |
+| `dispose(): void`          | Disposes the player                                |
+| `isRebroadcast(): boolean` | Returns whether the stream is a rebroadcast or not |
 
 ## Properties
 

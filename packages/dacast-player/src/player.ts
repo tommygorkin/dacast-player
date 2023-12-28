@@ -13,7 +13,11 @@ interface PlayerEvents {
   ended?: () => unknown
 }
 
-interface DacastPlayerEvents extends PlayerEvents {
+interface PlayerTechEvents {
+  retryplaylist?: () => unknown
+}
+
+interface DacastPlayerEvents extends PlayerEvents, PlayerTechEvents {
   error?: (err: MediaError) => unknown
 }
 
@@ -80,6 +84,12 @@ export class DacastPlayer {
     }
   }
 
+  _handlePlayerTechEvent(event: keyof PlayerTechEvents) {
+    if (this._options.on && this._options.on[event]) {
+      ;(this._options.on[event] as () => unknown)()
+    }
+  }
+
   _mountElement(id: string | Element) {
     let element: Element
     if (typeof id === 'string') {
@@ -115,7 +125,11 @@ export class DacastPlayer {
       'pause',
       'ended',
     ]
+    const playerTechEvents: Array<keyof PlayerTechEvents> = ['retryplaylist']
     events.forEach((ev) => instance.on(ev, () => this._handlePlayerEvent(ev)))
+    playerTechEvents.forEach((ev) =>
+      instance.tech().on(ev, () => this._handlePlayerTechEvent(ev))
+    )
     return instance
   }
 
@@ -186,5 +200,9 @@ export class DacastPlayer {
     if (this.player) {
       this.player.dispose()
     }
+  }
+
+  isRebroadcast() {
+    return this._src?.indexOf('live-rebroadcast') !== -1
   }
 }
