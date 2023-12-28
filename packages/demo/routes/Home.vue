@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { DacastPlayer } from '../../dacast-player'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const playerRef = ref(null as unknown as HTMLElement)
 const currentTime = ref(0)
+const rebroadcastResponse = ref<string | undefined>()
 
 let player: DacastPlayer
 
@@ -47,6 +48,9 @@ const pause = () => {
 const applyCurrentTime = () => {
   player.player?.currentTime(currentTime.value)
 }
+const isRebroadcast = () => {
+  rebroadcastResponse.value = player.isRebroadcast() ? 'yes' : 'no'
+}
 </script>
 
 <template>
@@ -60,6 +64,9 @@ const applyCurrentTime = () => {
       <div class="form__row">
         <button @click="play">Play</button>&nbsp;
         <button @click="pause">Pause</button>&nbsp;
+        <button @click="isRebroadcast">
+          Rebroadcast? {{ rebroadcastResponse }}</button
+        >&nbsp;
       </div>
       <div class="form__row">
         <label for="">Go to timestamp:</label>&nbsp;
